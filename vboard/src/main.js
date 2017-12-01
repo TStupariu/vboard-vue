@@ -5,9 +5,11 @@ import App from './App'
 import router from './router'
 import Vuetify from 'vuetify'
 import('../node_modules/vuetify/dist/vuetify.min.css')
+import colors from 'vuetify/es5/util/colors'
 
 Vue.config.productionTip = false
 
+Vue.use(Vuetify)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -15,5 +17,3 @@ new Vue({
   template: '<App/>',
   components: { App }
 })
-
-Vue.use(Vuetify)
