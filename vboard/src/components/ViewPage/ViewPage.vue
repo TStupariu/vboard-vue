@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<video id="video" ref="video" controls autoplay style="height: 500px; width: 500px"></video>
+		<video id="video" ref="video" controls autoplay style="height: 450px; width: 800px"></video>
 		<form>
 			<textarea id="incoming"></textarea>
 			<button type="submit">submit</button>
@@ -11,8 +11,8 @@
 
 <style lang="scss" scoped>
 	#canvas {
-		width: 500px;
-		height: 500px;
+		width: 800px;
+		height: 450px;
 		background-color: grey;
 	}
 </style>

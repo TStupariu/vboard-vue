@@ -13,8 +13,8 @@
 
 <style lang="scss" scoped>
 	#canvas {
-		width: 500px;
-		height: 500px;
+		width: 800px;
+		height: 450px;
 		background-color: grey;
 	}
 </style>
@@ -32,8 +32,8 @@
 
 			var canvas = document.querySelector("#canvas");
 			var myStream = canvas.captureStream(15);
-			var ctx = canvas.getContext("2d");
-			ctx.fillRect(100,100,100,100);
+			// var ctx = canvas.getContext("2d");
+			// ctx.fillRect(100,100,100,100);
 	
 			var p = new SimplePeer({ initiator: true, trickle: false, stream: myStream})
 			
@@ -50,12 +50,15 @@
 			p.on('connect', function () {
 			  console.log('CONNECT')
 			  p.send('whatever' + Math.random())
+			  var ctx = canvas.getContext("2d");
+				ctx.fillStyle="#FF0000";
+				ctx.fillRect(100,100,100,100);
 			})
 			
 			p.on('data', function (data) {
 			  console.log('data: ' + data)
 			})
-		},		
+		},
 		methods: {
 		}
 	}
