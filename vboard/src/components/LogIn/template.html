@@ -1,0 +1,21 @@
+<v-container class='elevation-10'>
+	<v-form v-model="valid">
+		<v-text-field
+			label="E-mail"
+			v-model="email"
+			:rules="emailRules"
+			required>
+		</v-text-field>
+		<v-text-field
+		  label="Enter your password"
+		  v-model="password"
+		  :rules="passwordRules"
+		  :append-icon="!pass_visible ? 'visibility' : 'visibility_off'"
+		  :append-icon-cb="() => (pass_visible = !pass_visible)"
+		  :type="!pass_visible ? 'password' : 'text'"
+		  counter>	
+		</v-text-field>
+		<v-btn @click="handleSubmit()">Log in</v-btn>
+		<v-btn @click="handleClear()">Clear</v-btn>
+	</v-form>
+</v-container>
