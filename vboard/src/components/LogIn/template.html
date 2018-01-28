@@ -15,7 +15,38 @@
 		  :type="!pass_visible ? 'password' : 'text'"
 		  counter>	
 		</v-text-field>
+		<div v-if='registerMode'> 
+			<v-text-field
+			  label="Password Confirmation"
+			  v-model="passwordConf"
+			  :rules="passwordRules"
+			  :append-icon="!pass_visible ? 'visibility' : 'visibility_off'"
+			  :append-icon-cb="() => (pass_visible = !pass_visible)"
+			  :type="!pass_visible ? 'password' : 'text'"
+			  counter>	
+			</v-text-field>
+		</div>
 		<v-btn @click="handleSubmit()">Log in</v-btn>
+		<v-btn v-if='!registerMode' @click="handleRegister()">Sign up</v-btn>
+		<v-btn v-if='registerMode' @click="handleSubmitRegister()">Sign up</v-btn>
 		<v-btn @click="handleClear()">Clear</v-btn>
 	</v-form>
+	<v-snackbar
+    :timeout="5000"
+    :color="'red'"
+    :multi-line="true"
+    :vertical="false"
+    v-model="snackbar">
+    Passwords do not match!
+    <v-btn dark flat @click.native="snackbar = false">Close</v-btn>
+  </v-snackbar>
+  <v-snackbar
+    :timeout="5000"
+    :color="'red'"
+    :multi-line="true"
+    :vertical="false"
+    v-model="snackbarRequestFailed">
+    Could not sign up!
+    <v-btn dark flat @click.native="snackbarRequestFailed = false">Close</v-btn>
+  </v-snackbar>
 </v-container>

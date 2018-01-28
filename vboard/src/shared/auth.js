@@ -1,5 +1,9 @@
+import axios from 'axios'
+import {BASE_URL} from '../shared/constants'
+
 class auth {
 	static setToken(response) {
+		console.log(response)
 		const head = response.headers
 		const auth_token = {
 			'access-token' : head['access-token'],
@@ -11,9 +15,17 @@ class auth {
 	}
 	
 	static getToken() {
-		const token = JSON.parse(localStorage.getItem("auth", JSON.stringify('auth')))
+		const token = JSON.parse(localStorage.getItem("auth"))
 		return token
 	}	
+
+	static isAuthed() {
+		const token = this.getToken()
+		if (token && new Date(token.expiry * 1000) > Date.now()) {
+			return true
+		}
+		return false
+	}
 }
 
 export default auth

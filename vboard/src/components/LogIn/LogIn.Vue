@@ -22,29 +22,56 @@ export default {
 			],
 			email: '',
 			password: '',
+			passwordConf: '',
+			registerMode: false,
+			snackbar: false,
+			snackbarRequestFailed: false
 		}
 	},
-	created: function () {
-		console.log(auth.getToken())
-  },
 	methods: {
 		handleSubmit() {
 			const data = {
 				"email": this.email,
 				"password": this.password
 			}
-      axios.post('http://localhost:3000/auth/sign_in', data)
-        .then((response) => {
-        	auth.setToken(response)
-        })
-        .catch((error) => {
-        	console.log(response)
-        })
+			axios.post('http://localhost:3000/auth/sign_in', data)
+			.then(response => {
+				auth.setToken(response)
+				this.$router.push('Profile')
+			})
+			.catch(error => {
+				console.log(error)
+			})
 		},
 
 		handleClear() {
 			this.email = ''
 			this.password = ''
+		},
+
+		handleRegister() {
+			this.registerMode = true
+		},
+
+		handleSubmitRegister() {
+			if (this.password === this.passwordConf) {
+				const url = BASE_URL + '/auth'
+				const data = {
+					"email": this.email,
+					"password": this.password
+				}
+				axios.post(url, data)
+				.then(response => {
+					auth.setToken(response)
+					this.$router.push('Profile')
+				})
+				.catch(error => {
+					console.log(error)
+					this.snackbarRequestFailed = true
+				})
+			} else {
+				this.snackbar = true
+			}
 		}
 	}
 }
