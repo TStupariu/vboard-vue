@@ -10,7 +10,16 @@ export default {
 	name: 'Dashboard',
 	data () {
 		return {
+			publicRooms: []
 		}
+	},
+	async mounted() {
+		const config = {
+			headers: await auth.getToken()
+		}
+		const response = await axios.get(BASE_URL + '/room/publicRooms', config)
+		auth.setToken(response.config)
+		this.publicRooms = response.data.rooms
 	},
 	methods: {
 	}

@@ -3,7 +3,6 @@ import {BASE_URL} from '../shared/constants'
 
 class auth {
 	static setToken(response) {
-		console.log(response)
 		const head = response.headers
 		const auth_token = {
 			'access-token' : head['access-token'],
@@ -25,6 +24,10 @@ class auth {
 			return true
 		}
 		return false
+	}
+
+	static clearToken() {
+		localStorage.removeItem('auth')
 	}
 }
 

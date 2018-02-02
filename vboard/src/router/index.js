@@ -5,6 +5,7 @@ import Styleguide from '@/components/Styleguide/Styleguide'
 import StreamPage from '@/components/StreamPage/StreamPage'
 import ViewPage from '@/components/ViewPage/ViewPage'
 import LogIn from '@/components/LogIn/LogIn'
+import LogOut from '@/components/LogOut/LogOut'
 import Dashboard from '@/components/Dashboard/Dashboard'
 import Profile from '@/components/Profile/Profile'
 import auth from '../shared/auth'
@@ -24,7 +25,7 @@ export default new Router({
 				next()
 			else
 				next({ path: 'LogIn' })
-    }
+		}
 	},
 	{
 		path: '/dashboard',
@@ -33,12 +34,21 @@ export default new Router({
 		beforeEnter: async (to, from, next) => {
 			let isAuthenticated = await auth.isAuthed()
 			next(isAuthenticated)
-    }
+		}
 	},
 	{
 		path: '/login',
 		name: 'LogIn',
 		component: LogIn
+	},	
+	{
+		path: '/logout',
+		name: 'LogOut',
+		component: LogOut,
+		beforeEnter: async (to, from, next) => {
+			let isAuthenticated = await auth.isAuthed()
+			next(isAuthenticated)
+		}
 	},
 	{
 		path: '/stream',
@@ -47,7 +57,7 @@ export default new Router({
 		beforeEnter: async (to, from, next) => {
 			let isAuthenticated = await auth.isAuthed()
 			next(isAuthenticated)
-    }
+		}
 	},
 	{
 		path: '/view',
@@ -56,7 +66,7 @@ export default new Router({
 		beforeEnter: async (to, from, next) => {
 			let isAuthenticated = await auth.isAuthed()
 			next(isAuthenticated)
-    }
+		}
 	},
 	{
 		path: '/style',
@@ -70,7 +80,7 @@ export default new Router({
 		beforeEnter: async (to, from, next) => {
 			let isAuthenticated = await auth.isAuthed()
 			next(isAuthenticated)
-    }
+		}
 	}
 	]
 })

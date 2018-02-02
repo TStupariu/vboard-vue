@@ -37,7 +37,7 @@ export default {
 			axios.post('http://localhost:3000/auth/sign_in', data)
 			.then(response => {
 				auth.setToken(response)
-				this.$router.push('Profile')
+				this.$router.push('Dashboard')
 			})
 			.catch(error => {
 				console.log(error)

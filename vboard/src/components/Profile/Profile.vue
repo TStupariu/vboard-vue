@@ -17,15 +17,11 @@ export default {
 			}
 		}
 	},
-	async created() {
-		const token = await auth.getToken()
-		let config = {
-		  headers: token
-		}
-		const response = await axios.get(BASE_URL + '/profile/' + token.uid, config)
-		auth.setToken(response.config)
+	async mounted() {
+		let response = await axios.get(BASE_URL + '/profile/' + await auth.getToken().uid)
 		if (response.data.profile) {
 			this.exists = true
+			this.profile = response.data.profile
 		} else {
 			this.exists = false
 		}
@@ -37,12 +33,16 @@ export default {
 			}
 			const data = {
 				name: this.profile.name,
-				profile_picture_url: this.profile.profile_picture_url
+				profile_picture_url: this.profile.profile_picture_url,
+				email: await auth.getToken().uid
 			}
-			console.log(data)
-			let response = await axios.post(BASE_URL + '/profile/create', data, config)
-			auth.setToken(response)
-			console.log(response)
+			if (this.exists) {
+				let response = await axios.post(BASE_URL + '/profile/update', data, config)
+				auth.setToken(response.config)
+			} else {
+				let response = await axios.post(BASE_URL + '/profile/create', data, config)
+				auth.setToken(response.config)
+			}
 		}
 	}
 }
