@@ -16,7 +16,7 @@
     "axios": "^0.17.1",
     "fabric": "^2.0.3",
     "io": "^1.0.0",
-    "simple-peer": "^8.2.0",
+    "simple-peer": "^8.5.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vuetify": "^0.17.3"
