@@ -71,6 +71,7 @@ export default {
       drawer: null,
       items: [
       { title: 'Log In', icon: 'account_circle', route: 'LogIn' },
+      { title: 'Create a room', icon: 'library_add', route: 'CreateRoom' },
       { title: 'Dashboard', icon: 'dashboard', route: 'Dashboard' },
       { title: 'Profile', icon: 'account_box', route: 'Profile' },
       { title: 'Log Out', icon: 'exit_to_app', route: 'LogOut' },
