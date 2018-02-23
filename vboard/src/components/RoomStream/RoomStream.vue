@@ -24,6 +24,7 @@ export default {
 	data() {
 		return {
 			room_id: null,
+			used_ids: []
 		}
 	},
 	components: {
@@ -36,8 +37,6 @@ export default {
 		var canvas = document.querySelector("#canvas");
 		var myStream = canvas.captureStream(30);
 
-		// let p = new SimplePeer({ initiator: true, trickle: false, stream: myStream })
-
 		db.ref(`rooms/${this.room_id}/peer`).on("value", (snapshot) => {
 			let snap = snapshot.val()
 			let peer_id = -1
@@ -45,45 +44,29 @@ export default {
 				peer_id = pid
 			}
 
-			let p = new SimplePeer({ initiator: true, trickle: false, stream: myStream })
-			// let p = new SimplePeer({ initiator: true, trickle: false, stream: myStream, channelName: `vboard_${this.room_id}`})
+			if (this.used_ids.indexOf(peer_id) === -1 && peer_id !== -1) {
+				console.log("IN YOUR ANUS")
+				let p = new SimplePeer({ initiator: true, trickle: false, stream: myStream })	
+				this.used_ids.push(peer_id)
 
-			p.on('signal', (data) => {
-				let foo = db.ref(`rooms/${this.room_id}/peer/${peer_id}`).once("value", (peerdata) => {
-					const currentStreamer = peerdata.val().streamer
-					if (!currentStreamer) {
-						db.ref(`rooms/${this.room_id}/peer/${peer_id}`).set({streamer: data})					
-						document.querySelector('#outgoing').textContent = JSON.stringify(data)	
+				p.on('signal', (data) => {
+					let foo = db.ref(`rooms/${this.room_id}/peer/${peer_id}`).once("value", (peerdata) => {
+						const currentStreamer = peerdata.val() && peerdata.val().streamer ? peerdata.val().streamer : false
+						if (!currentStreamer) {
+							db.ref(`rooms/${this.room_id}/peer/${peer_id}`).set({streamer: data})					
+							document.querySelector('#outgoing').textContent = JSON.stringify(data)	
+						}
+					})
+				})
+
+				db.ref(`rooms/${this.room_id}/peer/${peer_id}/receiver`).on("value", (recsnap) => {
+					const receiverData = recsnap.val()
+					if (receiverData) {
+						p.signal(receiverData)	
 					}
 				})
-			})
-
-			db.ref(`rooms/${this.room_id}/peer/${peer_id}/receiver`).on("value", (recsnap) => {
-				const receiverData = recsnap.val()
-				p.signal(receiverData)
-			})
+			}
 		})
-
-
-		// var SimplePeer = require('simple-peer')
-
-		// var canvas = document.querySelector("#canvas");
-		// var myStream = canvas.captureStream(30);
-
-		// var p = new SimplePeer({ initiator: true, trickle: false, stream: myStream, channelName: `vboard_${this.room_id}`})
-
-		// p.on('signal', function (data) {
-		// 	document.querySelector('#outgoing').textContent = JSON.stringify(data)
-		// })
-
-		// document.querySelector('form').addEventListener('submit', function (ev) {
-		// 	ev.preventDefault()
-		// 	p.signal(JSON.parse(document.querySelector('#incoming').value))
-		// })
-
-		// p.on('connect', function () {
-		// 	console.log('CONNECT')
-		// })
 	}
 }
 </script>
