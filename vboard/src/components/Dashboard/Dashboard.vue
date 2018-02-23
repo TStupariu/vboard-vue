@@ -17,8 +17,9 @@ export default {
     const config = {
       headers: await auth.getToken()
     };
-    const response = await axios.get(BASE_URL + "/room/publicRooms", config);
-    this.publicRooms = response.data.rooms;
+    const response = await axios.get(BASE_URL + "/room/publicRooms", config)
+    this.publicRooms = response.data.rooms
+    auth.setToken(response.config)
   },
   methods: {
     async joinRoom(room) {

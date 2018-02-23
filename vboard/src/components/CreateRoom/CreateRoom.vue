@@ -16,6 +16,7 @@
 import axios from "axios"
 import { BASE_URL } from "../../shared/constants"
 import auth from "../../shared/auth"
+import {db} from '../../firebase'
 
 export default {
 	name: "CreateRoom",
@@ -43,6 +44,8 @@ export default {
 			}
 			const response = await axios.post(BASE_URL + "/room/create", data, config)
 			auth.setToken(response.config)
+			
+			db.ref(`rooms/${response.data.room.id}`).set({creator_id: response.data.room.creator_id})
 			this.$router.push({ name: 'Room', params: {room_id: response.data.room.id }})
 		}
 	}

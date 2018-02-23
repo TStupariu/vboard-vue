@@ -16,52 +16,76 @@
 import axios from "axios"
 import { BASE_URL } from "../../shared/constants"
 import auth from "../../shared/auth"
+import {db} from "../../firebase"
 
 export default {
 	name: "RoomView",
 	data() {
 		return {
 			room_id: null,
+			user_id: null,
+			streamer_code: null,
+			peer_code: null
 		}
 	},
-	mounted() {
+	async mounted() {
 		this.room_id = this.$route.params.room_id
 
-		var SimplePeer = require('simple-peer')
-		var p = new SimplePeer({ initiator: false, trickle: false })
+		let SimplePeer = require('simple-peer')
+		let p = new SimplePeer({ initiator: false, trickle: false })
+		console.log("updated")
+
+		const config = {
+			headers: await auth.getToken()
+		}
+		const response = await axios.get(BASE_URL + '/users/getIdByEmail/' + config.headers.uid, config)
+		auth.setToken(response.config)
+		this.user_id = response.data.user_id
 		
-		p.on('error', function (err) { console.log('error', err) })
-		
-		p.on('signal', function (data) {
-			console.log('SIGNAL', JSON.stringify(data))
-			document.querySelector('#outgoing').textContent = JSON.stringify(data)
-		})
-		
-		document.querySelector('form').addEventListener('submit', function (ev) {
-			ev.preventDefault()
-			p.signal(JSON.parse(document.querySelector('#incoming').value))
-		})
-		
-		p.on('connect', function () {
-			console.log('CONNECT')
-			p.send('whatever' + Math.random())
-			var video = document.querySelector('video')
-			video.srcObject = this.str
-			video.onloadedmetadata = function(e) {
-				video.play();
-			};
-			console.log(this.str)
-		})
-		
-		p.on('data', function (data) {
-			console.log('data: ' + data)
+		db.ref(`rooms/${this.room_id}/peer`).set({[this.user_id]: ''})
+
+		db.ref(`rooms/${this.room_id}/peer/${this.user_id}/streamer`).on("value", (peerdata) => {
+			let data = peerdata.val()
+			this.streamer_code = data
+			p.signal(this.streamer_code)
 		})
 
-		p.on('stream', function (stream) {
-				// var video = document.querySelector('video')
-				// video.srcObject = stream
-				this.str = stream
-			})
+		p.on('signal', (data) => {
+			this.peer_code = data
+			db.ref(`rooms/${this.room_id}/peer/${this.user_id}`).update({receiver: this.peer_code})
+			document.querySelector('#outgoing').textContent = JSON.stringify(data)
+		})
+
+
+
+		// var SimplePeer = require('simple-peer')
+		// var p = new SimplePeer({ initiator: false, trickle: false, channelName: `vboard_${this.room_id}_${this.user_id}` })
+
+		// p.on('error', function (err) { console.log('error', err) })
+
+		// p.on('signal', function (data) {
+		// 	console.log('SIGNAL', JSON.stringify(data))
+		// 	document.querySelector('#outgoing').textContent = JSON.stringify(data)
+		// })
+
+		// document.querySelector('form').addEventListener('submit', function (ev) {
+		// 	ev.preventDefault()
+		// 	p.signal(JSON.parse(document.querySelector('#incoming').value))
+		// })
+
+		// p.on('connect', function () {
+		// 	console.log('CONNECT')
+		// 	p.send('whatever' + Math.random())
+		// 	var video = document.querySelector('video')
+		// 	video.srcObject = this.str
+		// 	video.onloadedmetadata = function(e) {
+		// 		video.play();
+		// 	};
+		// })
+
+		// p.on('stream', function (stream) {
+		// 	this.str = stream
+		// })
 	}
 }
 </script>

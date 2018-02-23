@@ -35,34 +35,35 @@ export default {
 		return {
 			room_id: null,
 			participants: [],
-			room: {}
+			room: {},
 		}
 	},
 	async mounted() {
-		this.room_id = this.$route.params.room_id
-		const config = {
-			headers: await auth.getToken()
-		};
-		const response = await axios.get(BASE_URL + "/room/getRoomById/" + this.room_id, config);
-		auth.setToken(response.config)
-		this.participants = response.data.participants
-		this.room = response.data.room
-	},
-	methods: {
-		async navigateToStream() {
-			const config = {
-				headers: await auth.getToken()
-			};
-			const response = await axios.get(BASE_URL + "/room/userIsOwner/" + this.room_id + "/" + config.headers.uid, config);
-			auth.setToken(response.config)
-			const isOwner = response.data.isOwner
-			if (isOwner) {
-				this.$router.push({name: 'RoomStream', params: {room_id: this.room_id}})
-			} else {
-				this.$router.push({name: 'RoomView', params: {room_id: this.room_id}})
-			}
-		}
-	}
+  	this.room_id = this.$route.params.room_id
+  	const config = {
+  		headers: await auth.getToken()
+  	};
+  	const response = await axios.get(BASE_URL + "/room/getRoomById/" + this.room_id, config);
+  	auth.setToken(response.config)
+  	this.participants = response.data.participants
+  	this.room = response.data.room
+  },
+  methods: {
+  	async navigateToStream() {
+  		const config = {
+  			headers: await auth.getToken()
+  		};
+  		const response = await axios.get(BASE_URL + "/room/userIsOwner/" + this.room_id + "/" + config.headers.uid, config);
+  		auth.setToken(response.config)
+  		const isOwner = response.data.isOwner
+  		console.log(isOwner)
+  		if (isOwner) {
+  			this.$router.push({name: 'RoomStream', params: {room_id: this.room_id}})
+  		} else {
+  			this.$router.push({name: 'RoomView', params: {room_id: this.room_id}})
+  		}
+  	}
+  }
 }
 </script>
 

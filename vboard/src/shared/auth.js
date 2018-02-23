@@ -13,6 +13,11 @@ class auth {
 		localStorage.setItem("auth", JSON.stringify(auth_token))
 	}
 	
+	static getUser() {
+		const user = this.getToken().uid
+		return user
+	}
+
 	static getToken() {
 		const token = JSON.parse(localStorage.getItem("auth"))
 		return token
