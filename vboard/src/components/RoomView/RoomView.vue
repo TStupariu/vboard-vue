@@ -8,6 +8,7 @@
 				<button type="submit">submit</button>
 			</form>
 			<pre id="outgoing"></pre>
+			<chat :roomid="room_id" />
 		</div>
 	</div>
 </template>
@@ -17,6 +18,7 @@ import axios from "axios"
 import { BASE_URL } from "../../shared/constants"
 import auth from "../../shared/auth"
 import {db} from "../../firebase"
+import Chat from "../Chat/Chat.vue"
 
 export default {
 	name: "RoomView",
@@ -28,12 +30,16 @@ export default {
 			peer_code: null
 		}
 	},
-	async mounted() {
+	components: {
+		'chat': Chat
+	},
+	created() {
 		this.room_id = this.$route.params.room_id
-
+		document.addEventListener('beforeunload', this.handler)
+	},
+	async mounted() {
 		let SimplePeer = require('simple-peer')
 		let p = new SimplePeer({ initiator: false, trickle: false })
-		console.log("updated")
 
 		const config = {
 			headers: await auth.getToken()
@@ -71,6 +77,11 @@ export default {
 		p.on('stream', function (stream) {
 			this.str = stream
 		})
+	},
+	methods: {
+		handler() {
+			console.log("Baby please don't go")
+		}
 	}
 }
 </script>

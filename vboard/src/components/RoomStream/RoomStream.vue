@@ -9,6 +9,7 @@
 			<button type="submit">submit</button>
 		</form>
 		<pre id="outgoing"></pre>
+		<chat :roomid="room_id" />
 	</div>
 </template>
 
@@ -18,6 +19,7 @@ import { BASE_URL } from "../../shared/constants"
 import auth from "../../shared/auth"
 import Canvas from "../Canvas/Canvas.vue"
 import {db} from '../../firebase'
+import Chat from "../Chat/Chat.vue"
 
 export default {
 	name: "RoomStream",
@@ -28,11 +30,13 @@ export default {
 		}
 	},
 	components: {
-		'canvas-stream': Canvas
+		'canvas-stream': Canvas,
+		'chat': Chat
+	},
+	created() {
+		this.room_id = this.$route.params.room_id
 	},
 	mounted() {
-		this.room_id = this.$route.params.room_id
-
 		var SimplePeer = require('simple-peer')
 		var canvas = document.querySelector("#canvas");
 		var myStream = canvas.captureStream(30);
@@ -42,29 +46,32 @@ export default {
 			let peer_id = -1
 			for (var pid in snap) {
 				peer_id = pid
-			}
 
-			if (this.used_ids.indexOf(peer_id) === -1 && peer_id !== -1) {
-				console.log("IN YOUR ANUS")
-				let p = new SimplePeer({ initiator: true, trickle: false, stream: myStream })	
-				this.used_ids.push(peer_id)
+				if (this.used_ids.indexOf(peer_id) === -1 && peer_id !== -1) {
+					let p = new SimplePeer({ initiator: true, trickle: false, stream: myStream })	
+					this.used_ids.push(peer_id)
 
-				p.on('signal', (data) => {
-					let foo = db.ref(`rooms/${this.room_id}/peer/${peer_id}`).once("value", (peerdata) => {
-						const currentStreamer = peerdata.val() && peerdata.val().streamer ? peerdata.val().streamer : false
-						if (!currentStreamer) {
-							db.ref(`rooms/${this.room_id}/peer/${peer_id}`).set({streamer: data})					
-							document.querySelector('#outgoing').textContent = JSON.stringify(data)	
+					p.on('signal', (data) => {
+						let foo = db.ref(`rooms/${this.room_id}/peer/${peer_id}`).once("value", (peerdata) => {
+							const currentStreamer = peerdata.val() && peerdata.val().streamer ? peerdata.val().streamer : false
+							if (!currentStreamer) {
+								db.ref(`rooms/${this.room_id}/peer/${peer_id}`).set({streamer: data})					
+								document.querySelector('#outgoing').textContent = JSON.stringify(data)	
+							}
+						})
+					})
+
+					p.on('close', () => {
+						console.log(p)
+					})
+
+					db.ref(`rooms/${this.room_id}/peer/${peer_id}/receiver`).on("value", (recsnap) => {
+						const receiverData = recsnap.val()
+						if (receiverData) {
+							p.signal(receiverData)	
 						}
 					})
-				})
-
-				db.ref(`rooms/${this.room_id}/peer/${peer_id}/receiver`).on("value", (recsnap) => {
-					const receiverData = recsnap.val()
-					if (receiverData) {
-						p.signal(receiverData)	
-					}
-				})
+				}
 			}
 		})
 	}

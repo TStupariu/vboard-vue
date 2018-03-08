@@ -23,6 +23,7 @@ export default {
   },
   methods: {
     async joinRoom(room) {
+      console.log(room)
       const config = {
         headers: await auth.getToken()
       }
@@ -31,6 +32,7 @@ export default {
         room_id: room.id
       }
       const response = await axios.post(BASE_URL + "/room/joinPublic", data, config)
+      console.log(response)
       auth.setToken(response.config);
       this.$router.push({name: 'Room', params: {room_id: response.data.userRoom.room_id}})
     },
