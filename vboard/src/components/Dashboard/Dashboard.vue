@@ -5,6 +5,7 @@
 import axios from "axios";
 import { BASE_URL } from "../../shared/constants";
 import auth from "../../shared/auth";
+import {db} from '../../firebase'
 
 export default {
   name: "Dashboard",
@@ -43,6 +44,9 @@ export default {
       const response = await axios.post(BASE_URL + "/room/joinPublic", data, config)
       console.log(response)
       auth.setToken(response.config);
+      if (response.data.userRoom) {
+        db.ref(`/rooms/${room.id}/participants`).update({[auth.getUser().replace('.', '%2E')]: true})
+      }
       this.$router.push({name: 'Room', params: {room_id: response.data.userRoom.room_id}})
     },
     async promptPassword(room) {
@@ -62,6 +66,7 @@ export default {
       const response = await axios.post(BASE_URL + "/room/joinPrivate", data, config)
       auth.setToken(response.config);
       if (response.data.userRoom) {
+        db.ref(`/rooms/${response.data.userRoom.id}/participants`).update({[auth.getUser().replace('.', '%2E')]: true})
         this.$router.push({name: 'Room', params: {room_id: response.data.userRoom.room_id}}) 
       } else {
         alert("Invalid password!")

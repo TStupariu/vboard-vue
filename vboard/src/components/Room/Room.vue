@@ -18,6 +18,18 @@
 						</v-list-tile>
 					</v-list>
 				</v-card>
+				<v-card>
+					<v-toolbar color="yellow">
+						<h2>Participants from firebase</h2>
+					</v-toolbar>
+					<v-list>
+						<v-list-tile avatar v-for="item in participantsFirebase" v-bind:key="item">
+							<v-list-tile-content>
+								<v-list-tile-title v-text="item"></v-list-tile-title>
+							</v-list-tile-content>
+						</v-list-tile>
+					</v-list>
+				</v-card>
 			</v-flex>
 		</v-layout>
 		<v-btn @click="navigateToStream()">STREAM</v-btn>
@@ -28,6 +40,7 @@
 import axios from "axios"
 import { BASE_URL } from "../../shared/constants"
 import auth from "../../shared/auth"
+import {db} from '../../firebase'
 
 export default {
 	name: "Room",
@@ -35,6 +48,7 @@ export default {
 		return {
 			room_id: null,
 			participants: [],
+			participantsFirebase: [],
 			room: {},
 		}
 	},
@@ -47,6 +61,11 @@ export default {
   	auth.setToken(response.config)
   	this.participants = response.data.participants
   	this.room = response.data.room
+  	db.ref(`/rooms/${this.room_id}/participants`).on('value', (snap) => {
+  		const data = snap.val()
+  		console.log(data)
+  		this.participantsFirebase = Object.keys(data).map(function (key) { return key.replace("%2E", "."); });
+  	})
   },
   methods: {
   	async navigateToStream() {
