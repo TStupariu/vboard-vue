@@ -45,8 +45,8 @@ export default {
 			const response = await axios.post(BASE_URL + "/room/create", data, config)
 			auth.setToken(response.config)
 			
-			db.ref(`rooms/${response.data.room.id}`).set({creator_id: response.data.room.creator_id})
-			this.$router.push({ name: 'Room', params: {room_id: response.data.room.id }})
+			db.ref(`rooms/${response.data.id}`).set({creator_id: response.data.creator_id})
+			this.$router.push({ name: 'Room', params: {room_id: response.data.id }})
 		}
 	}
 }

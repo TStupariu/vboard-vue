@@ -4,7 +4,7 @@
 			<h1>DASHBOARD</h1>
 			<v-list two-line subheader>
 				<v-subheader inset>Public Rooms</v-subheader>
-				<v-list-tile avatar v-for="item in publicRooms" :key="item.room.id" @click="seeRoom(item.room)">
+				<v-list-tile avatar v-for="item in publicRooms" :key="item.room.id">
 					<v-list-tile-content>
 						<v-list-tile-title>{{ item.room.name }}</v-list-tile-title>
 						<v-list-tile-sub-title>Created by: {{ item.creator.name }}</v-list-tile-sub-title>
@@ -17,6 +17,46 @@
 				</v-list-tile>
 				<v-divider inset></v-divider>
 			</v-list>
+			<v-list two-line subheader>
+				<v-subheader inset>Private Rooms</v-subheader>
+				<v-list-tile avatar v-for="item in privateRooms" :key="item.room.id">
+					<v-list-tile-content>
+						<v-list-tile-title>{{ item.room.name }}</v-list-tile-title>
+						<v-list-tile-sub-title>Created by: {{ item.creator.name }}</v-list-tile-sub-title>
+					</v-list-tile-content>
+					<v-list-tile-action>
+						<v-btn icon ripple @click="promptPassword(item.room)">
+							<v-icon color="grey lighten-1">add</v-icon>
+						</v-btn>
+					</v-list-tile-action>
+				</v-list-tile>
+				<v-divider inset></v-divider>
+			</v-list>
 		</v-flex>
 	</v-layout>
+
+	<v-layout row justify-center>
+    <v-dialog v-model="dialog" persistent max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Password</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12 sm6 md4>
+                <v-text-field label="Password" v-model="password" required></v-text-field>
+              </v-flex>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click.native="dialog = false">Close</v-btn>
+          <v-btn color="blue darken-1" flat @click.native="joinPrivateRoom()">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-layout>
 </v-container>

@@ -42,6 +42,7 @@
 import "fabric";
 export default {
 	name: "Canvas",
+	props: ['addedPeer'],
 	data() {
 		return {
 			mode: "Select",
@@ -73,6 +74,10 @@ export default {
 			if (this.mode === "Brush") {
 				this.selectBrush();
 			}
+		},
+		addedPeer: function(val, oldVal) {
+			console.log("ADDED PEER", val, oldVal);
+			this.canvasObj.renderAll()
 		}
 	},
 	mounted() {

@@ -3,7 +3,7 @@
 		<div>
 			<h1>Stream for room with id {{room_id}}</h1>
 		</div>
-		<canvas-stream />
+		<canvas-stream :addedPeer="connectedPeer"/>
 		<form>
 			<textarea id="incoming"></textarea>
 			<button type="submit">submit</button>
@@ -26,7 +26,8 @@ export default {
 	data() {
 		return {
 			room_id: null,
-			used_ids: []
+			used_ids: [],
+			connectedPeer: null
 		}
 	},
 	components: {
@@ -40,6 +41,14 @@ export default {
 		var SimplePeer = require('simple-peer')
 		var canvas = document.querySelector("#canvas");
 		var myStream = canvas.captureStream(30);
+		navigator.getUserMedia({ "audio": true, "video": false }, (audioStream) =>
+		{
+			var audioTrack = audioStream.getAudioTracks()[0];
+			
+			myStream.addTrack( audioTrack );
+		}, function(error) { console.log(error);});
+
+
 
 		db.ref(`rooms/${this.room_id}/peer`).on("value", (snapshot) => {
 			let snap = snapshot.val()
@@ -63,6 +72,11 @@ export default {
 
 					p.on('close', () => {
 						console.log(p)
+					})
+
+					p.on('connect', () => {
+						console.log("PEER CONNECTED")
+						this.connectedPeer = pid
 					})
 
 					db.ref(`rooms/${this.room_id}/peer/${peer_id}/receiver`).on("value", (recsnap) => {
