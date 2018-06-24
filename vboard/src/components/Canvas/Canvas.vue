@@ -34,7 +34,9 @@
 			<input type="text" v-model='image.url' />
 			<button @click="addImage">Add</button>
 		</div>
-		<canvas id="canvas" width="800px" height="600px"></canvas>
+		<div class='canvas-container'>
+			<canvas id="canvas" width="1120px" height="630px"></canvas>
+		</div>
 	</div>
 </template>
 
@@ -83,7 +85,7 @@ export default {
 	mounted() {
 		this.canvas = document.getElementById("canvas");
 		this.canvasObj = new fabric.Canvas("canvas", {
-			backgroundColor: "#afafaf",
+			backgroundColor: "#ffffff",
 			isDrawingMode: false
 		});
 		// SHAPE DRAWING
@@ -285,5 +287,8 @@ export default {
 <style type="text/css" scoped>
 .buttonActive {
   background-color: white;
+}
+#canvas {
+	border: 1px solid grey;
 }
 </style>

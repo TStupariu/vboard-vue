@@ -1,16 +1,11 @@
 <template>
-	<div>
+	<v-container elevation-10>
 		<div>
 			<h1>Stream for room with id {{room_id}}</h1>
 		</div>
 		<canvas-stream :addedPeer="connectedPeer"/>
-		<form>
-			<textarea id="incoming"></textarea>
-			<button type="submit">submit</button>
-		</form>
-		<pre id="outgoing"></pre>
 		<chat :roomid="room_id" />
-	</div>
+	</v-container>
 </template>
 
 <script>

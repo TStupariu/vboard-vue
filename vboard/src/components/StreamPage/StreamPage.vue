@@ -31,9 +31,7 @@
 			var SimplePeer = require('simple-peer')
 
 			var canvas = document.querySelector("#canvas");
-			var myStream = canvas.captureStream(15);
-			// var ctx = canvas.getContext("2d");
-			// ctx.fillRect(100,100,100,100);
+			var myStream = canvas.captureStream(30);
 	
 			var p = new SimplePeer({ initiator: true, trickle: false, stream: myStream})
 			

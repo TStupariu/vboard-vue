@@ -2,7 +2,7 @@
 	<v-layout row wrap>
 		<v-flex xs12>
 			<h1>DASHBOARD</h1>
-			<v-list two-line subheader>
+			<v-list two-line subheader class='room-list'>
 				<v-subheader inset>Public Rooms</v-subheader>
 				<v-list-tile avatar v-for="item in publicRooms" :key="item.room.id">
 					<v-list-tile-content>
@@ -17,7 +17,8 @@
 				</v-list-tile>
 				<v-divider inset></v-divider>
 			</v-list>
-			<v-list two-line subheader>
+			<hr />
+			<v-list two-line subheader class='room-list'>
 				<v-subheader inset>Private Rooms</v-subheader>
 				<v-list-tile avatar v-for="item in privateRooms" :key="item.room.id">
 					<v-list-tile-content>
